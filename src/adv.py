@@ -35,6 +35,10 @@ room['narrow'].w_to = room['foyer']
 room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
+
+def location(player, prev_room = ''):
+    if player.room.enter_room != prev_room:
+        print(f"player is in room: {player.room.name} \n ({fill(player.room.description), 50})")
 #
 # Main
 #
@@ -52,21 +56,36 @@ player = Player('Sydney', room['outside'])
 #
 # If the user enters "q", quit the game.
 
+direction = {
+    'n': 'n_to',
+    'e': 'e_to',
+    's': 's_to',
+    'w': 'w_to',
+}
+
+location(player)
 
 while True:
-    print(f"\n player is in room: {player.room.name}")
-    print(fill(player.room.description, 50))
 
     cmd = input('\n n/e/s/w -> \n')
 
-    if cmd == 'n' and hasattr(player.room, 'n_to'):
-        player.room = player.room.n_to
-    elif cmd == 'e' and hasattr(player.room, 'e_to'):
-        player.room = player.room.e_to
-    elif cmd == 's' and hasattr(player.room, 's_to'):
-        player.room = player.room.s_to
-    elif cmd == 'w' and hasattr(player.room, 'w_to'):
-        player.room = player.room.w_to
+    # if cmd == 'n' and hasattr(player.room, 'n_to'):
+    #     player.room = player.room.n_to
+    # elif cmd == 'e' and hasattr(player.room, 'e_to'):
+    #     player.room = player.room.e_to
+    # elif cmd == 's' and hasattr(player.room, 's_to'):
+    #     player.room = player.room.s_to
+    # elif cmd == 'w' and hasattr(player.room, 'w_to'):
+    #     player.room = player.room.w_to
+    # elif cmd == 'q':
+    #     break
+    # else:
+    #     print('\n Invalid command \n')
+
+    if direction.get(cmd):
+        prev_room = player.room.name
+        player.room = player.room.enter_room(direction[cmd])
+        location(player, prev_room)
     elif cmd == 'q':
         break
     else:
