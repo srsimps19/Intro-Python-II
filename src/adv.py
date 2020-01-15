@@ -1,27 +1,28 @@
 from room import Room
 from player import Player
 from item import Item
+from item import LightSource
 from textwrap import fill
 
 # Declare all the rooms
 
 room = {
     'outside':  Room("Outside Cave Entrance",
-                     "North of you, the cave mount beckons"),
+                     "North of you, the cave mount beckons", True),
 
     'foyer':    Room("Foyer", """Dim light filters in from the south. Dusty
-passages run north and east."""),
+passages run north and east.""", True),
 
     'overlook': Room("Grand Overlook", """A steep cliff appears before you, falling
 into the darkness. Ahead to the north, a light flickers in
-the distance, but there is no way across the chasm."""),
+the distance, but there is no way across the chasm.""", True),
 
     'narrow':   Room("Narrow Passage", """The narrow passage bends here from west
-to north. The smell of gold permeates the air."""),
+to north. The smell of gold permeates the air.""", False),
 
     'treasure': Room("Treasure Chamber", """You've found the long-lost treasure
 chamber! Sadly, it has already been completely emptied by
-earlier adventurers. The only exit is to the south."""),
+earlier adventurers. The only exit is to the south.""", False),
 }
 
 # Declares Items
@@ -32,8 +33,9 @@ item = {
     'mouse': Item("mouse", "small rodent"),
     'rocks': Item("rocks", "just ordinary rocks"),
     'axe': Item("axe", "sturdy wooden handled axe"),
-    'empty chest': Item("empty chest", "old broken treasure chest"),
-    'hidden coins': Item("hidden coins", "hiding in a small hole in the wall, is a few more dusty gold medalians")
+    'chest': Item("chest", "old broken treasure chest"),
+    'coins': Item("coins", "hiding in a small hole in the wall, is a few more dusty gold medalians"),
+    'torch': LightSource("torch", "a lit wooden torch")
 }
 
 # Link rooms together
@@ -52,14 +54,22 @@ room['treasure'].s_to = room['narrow']
 room['outside'].items_list = [item['sword'], item['rocks']]
 room['foyer'].items_list = [item['rocks']]
 room['overlook'].items_list = [item['rocks'], item['axe']]
-room['narrow'].items_list = [item['rocks'], item['coins']]
-room['treasure'].items_list = [item['empty chest'], item['hidden coins']]
+room['narrow'].items_list = [item['rocks'], item['coins'], item['torch']]
+room['treasure'].items_list = [item['chest'], item['coins']]
 
 def location(player, prev_room = ''):
     if player.room.enter_room != prev_room:
-        print(f"\nPlayer is in room: {player.room.name} \n{player.room.description}\nItems in this room:")
-        for item in player.room.items_list:
-            print(item.name)
+        if player.room.is_light == False:
+            print("\nIt's pitch black!")     
+        else:
+            print(f"Player is in room: {player.room.name} \n{player.room.description}\nItems in this room:")
+            for item in player.room.items_list:
+                if isinstance(item, LightSource):
+                    print(f"{item.name} is a light source!")
+                else:
+                    print(item.name)
+        
+
 #
 # Main
 #
@@ -88,7 +98,7 @@ location(player)
 
 while True:
 
-    cmd = input('\n n/e/s/w -> \n')
+    cmd = input('\n What would you like to do? -> \n')
     words = cmd.split(' ')
 
     # if cmd == 'n' and hasattr(player.room, 'n_to'):
@@ -108,7 +118,16 @@ while True:
         prev_room = player.room.name
         player.room = player.room.enter_room(direction[cmd])
         location(player, prev_room)
+    elif cmd == 'i':
+        player.invent()
+    elif words[0] =='inventory':
+        player.invent()
     elif words[0] == 'take' and item.get(words[1]):
+        if player.room.is_light == False:
+            print("Good luck finding that in the dark!")
+        else:
+            player.take(item.get(words[1]))
+    elif words[0] == 'get' and item.get(words[1]):
         player.take(item.get(words[1]))
     elif words[0] == 'drop' and item.get(words[1]):
         player.drop(item.get(words[1]))

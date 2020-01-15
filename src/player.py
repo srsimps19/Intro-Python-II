@@ -20,3 +20,6 @@ class Player:
             item.on_drop()
         else:
             print("You don't have that item in your inventory!")
+    def invent(self):
+        for item in self.inventory:
+            print(item.name)

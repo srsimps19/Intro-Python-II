@@ -2,10 +2,11 @@
 # description attributes.
 
 class Room:
-    def __init__(self, name, description, items_list=[]):
+    def __init__(self, name, description, is_light, items_list=[]):
         self.name = name
         self.description = description
         self.items_list = items_list 
+        self.is_light = is_light
         self.n_to = self
         self.e_to = self
         self.s_to = self
@@ -16,3 +17,4 @@ class Room:
         if new_room == self:
             print("You can't move that direction")
         return new_room
+    
