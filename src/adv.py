@@ -1,5 +1,6 @@
 from room import Room
 from player import Player
+from item import Item
 from textwrap import fill
 
 # Declare all the rooms
