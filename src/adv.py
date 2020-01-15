@@ -7,23 +7,34 @@ from textwrap import fill
 
 room = {
     'outside':  Room("Outside Cave Entrance",
-                     "North of you, the cave mount beckons", ["coins", "sword"]),
+                     "North of you, the cave mount beckons"),
 
     'foyer':    Room("Foyer", """Dim light filters in from the south. Dusty
-passages run north and east.""", ["mouse", "coins"]),
+passages run north and east."""),
 
     'overlook': Room("Grand Overlook", """A steep cliff appears before you, falling
 into the darkness. Ahead to the north, a light flickers in
-the distance, but there is no way across the chasm.""",["coins", "rocks"]),
+the distance, but there is no way across the chasm."""),
 
     'narrow':   Room("Narrow Passage", """The narrow passage bends here from west
-to north. The smell of gold permeates the air.""",["coins", "axe"]),
+to north. The smell of gold permeates the air."""),
 
     'treasure': Room("Treasure Chamber", """You've found the long-lost treasure
 chamber! Sadly, it has already been completely emptied by
-earlier adventurers. The only exit is to the south.""",["empty chest", "hidden coins"]),
+earlier adventurers. The only exit is to the south."""),
 }
 
+# Declares Items
+
+item = {
+    'coins': Item("coins", "shiny gold medalians"),
+    'sword': Item("sword", "an old iron sword"),
+    'mouse': Item("mouse", "small rodent"),
+    'rocks': Item("rocks", "just ordinary rocks"),
+    'axe': Item("axe", "sturdy wooden handled axe"),
+    'empty chest': Item("empty chest", "old broken treasure chest"),
+    'hidden coins': Item("hidden coins", "hiding in a small hole in the wall, is a few more dusty gold medalians")
+}
 
 # Link rooms together
 
@@ -36,12 +47,19 @@ room['narrow'].w_to = room['foyer']
 room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
+# Link items to rooms
+
+room['outside'].items_list = [item['sword'], item['rocks']]
+room['foyer'].items_list = [item['rocks']]
+room['overlook'].items_list = [item['rocks'], item['axe']]
+room['narrow'].items_list = [item['rocks'], item['coins']]
+room['treasure'].items_list = [item['empty chest'], item['hidden coins']]
 
 def location(player, prev_room = ''):
     if player.room.enter_room != prev_room:
         print(f"\nPlayer is in room: {player.room.name} \n{player.room.description}\nItems in this room:")
         for item in player.room.items_list:
-            print(item)
+            print(item.name)
 #
 # Main
 #
