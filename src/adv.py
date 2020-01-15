@@ -89,6 +89,7 @@ location(player)
 while True:
 
     cmd = input('\n n/e/s/w -> \n')
+    words = cmd.split(' ')
 
     # if cmd == 'n' and hasattr(player.room, 'n_to'):
     #     player.room = player.room.n_to
@@ -107,6 +108,10 @@ while True:
         prev_room = player.room.name
         player.room = player.room.enter_room(direction[cmd])
         location(player, prev_room)
+    elif words[0] == 'take' and item.get(words[1]):
+        player.take(item.get(words[1]))
+    elif words[0] == 'drop' and item.get(words[1]):
+        player.drop(item.get(words[1]))
     elif cmd == 'q':
         break
     else:
